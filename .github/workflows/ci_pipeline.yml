@@ -49,5 +49,5 @@ jobs:
 
       - name: Push latest
         run: |
-          docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_api:latest
-          docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_client:latest
+          docker push ghcr.io/${ env.OWNER_LC }}/argo_app_api:latest
+          docker push ghcr.io/${ env.OWNER_LC }}/argo_app_client:latest

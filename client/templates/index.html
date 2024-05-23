@@ -1,0 +1,160 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        let itemsData = []; // To store items data
+        let itemsMap = new Map(); // To map item IDs to item names
+
+        async function fetchItems() {
+            const response = await fetch('/items');
+            const items = await response.json();
+            itemsData = items; // Store items data for later use
+            itemsMap = new Map(items.map(item => [item.id, item.name])); // Map item IDs to names
+            const itemsTable = document.getElementById('items-table');
+            const itemsSelect = document.getElementById('items-select');
+            itemsTable.innerHTML = ''; // Clear previous items
+            itemsSelect.innerHTML = ''; // Clear previous options
+            items.forEach(item => {
+                const row = itemsTable.insertRow();
+                row.insertCell(0).innerText = item.id;
+                row.insertCell(1).innerText = item.name;
+                row.insertCell(2).innerText = `$${item.price}`; // Add dollar sign
+
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.innerText = `${item.name} - $${item.price}`;
+                itemsSelect.appendChild(option);
+            });
+        }
+
+        async function fetchUsers() {
+            const response = await fetch('/users');
+            const users = await response.json();
+            const userSelect = document.getElementById('user-select');
+            userSelect.innerHTML = ''; // Clear previous options
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.userID;
+                option.innerText = user.userName;
+                userSelect.appendChild(option);
+            });
+        }
+
+        async function fetchUserDetails(userId) {
+            const response = await fetch(`/user/${userId}`);
+            const user = await response.json();
+            const userDetails = document.getElementById('user-details');
+            const purchases = user.purchases.map(itemId => itemsMap.get(itemId) || itemId); // Map item IDs to names
+            userDetails.innerHTML = `
+                <h3>User Details</h3>
+                <p><strong>ID:</strong> ${user.userID}</p>
+                <p><strong>Name:</strong> ${user.userName}</p>
+                <p><strong>Purchases:</strong> ${purchases.join(', ')}</p>
+                <p><strong>Total Cost:</strong> $${user.totalCost ? user.totalCost.toFixed(2) : '0.00'}</p>
+            `;
+        }
+
+        async function getAllBoughtItems() {
+            const userId = document.getElementById('user-select').value;
+            const response = await fetch('/get_all_bought_items', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: userId })
+            });
+            const result = await response.json();
+            if (result.status === 'request sent') {
+                alert('Request sent successfully!');
+            } else {
+                alert('Error sending request.');
+            }
+        }
+
+        async function buyItem() {
+            const userId = document.getElementById('user-select').value;
+            const itemId = document.getElementById('items-select').value;
+            if (!userId || !itemId) {
+                alert('Please select both user and item.');
+                return;
+            }
+
+            const response = await fetch('/buy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: userId, item_id: itemId })
+            });
+
+            const result = await response.json();
+            if (result.status === 'success') {
+                alert('Item purchased successfully!');
+                fetchUserDetails(userId); // Update user details
+            } else {
+                alert('Error purchasing item.');
+            }
+        }
+
+        function displaySelectedItemPrice() {
+            const itemId = document.getElementById('items-select').value;
+            const selectedItem = itemsData.find(item => item.id === itemId);
+            const itemPrice = document.getElementById('item-price');
+            itemPrice.innerText = selectedItem ? `Price: $${selectedItem.price}` : '';
+        }
+
+        window.onload = function() {
+            fetchItems();
+            fetchUsers();
+            document.getElementById('user-select').addEventListener('change', function() {
+                const userId = this.value;
+                fetchUserDetails(userId);
+            });
+            document.getElementById('items-select').addEventListener('change', displaySelectedItemPrice);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Shop</h1>
+        </header>
+        <main>
+            <section class="section">
+                <h2>Items</h2>
+                <table id="items-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+            <section class="section">
+                <h2>Users</h2>
+                <select id="user-select">
+                    <option value="">Select a user</option>
+                </select>
+                <div id="user-details" class="details-box"></div>
+                <button class="button" onclick="getAllBoughtItems()">Get All Bought Items</button>
+            </section>
+            <section class="section">
+                <h2>Purchase an Item</h2>
+                <select id="items-select">
+                    <option value="">Select an item</option>
+                </select>
+                <div id="item-price" class="details-box"></div>
+                <button class="button" onclick="buyItem()">Buy Item</button>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

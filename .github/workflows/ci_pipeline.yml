@@ -19,8 +19,8 @@ jobs:
     
     - name: Build the Docker image
       run: |
-        docker build ./api -t barminz/argo_app_api:${{ env.git_branch }}.${{ env.git_hash }}
-        docker build ./client -t barminz/argo_app_client:${{ env.git_branch }}.${{ env.git_hash }}
+        docker build ./api -t kupidun/argo_app_api:${{ env.git_branch }}.${{ env.git_hash }}
+        docker build ./client -t kupidun/argo_app_client:${{ env.git_branch }}.${{ env.git_hash }}
 
     - name: Login to Docker Hub
       uses: docker/login-action@v3
@@ -30,15 +30,15 @@ jobs:
 
     - name: Push current version
       run: |
-        docker push barminz/argo_app_api:${{ env.git_branch }}.${{ env.git_hash }}
-        docker push barminz/argo_app_client:${{ env.git_branch }}.${{ env.git_hash }}
+        docker push kupidun/argo_app_api:${{ env.git_branch }}.${{ env.git_hash }}
+        docker push kupidun/argo_app_client:${{ env.git_branch }}.${{ env.git_hash }}
 
     - name: Tag latest
       run: |
-        docker tag barminz/argo_app_api:${{ env.git_branch }}.${{ env.git_hash }} barminz/argo_app_api:latest
-        docker tag barminz/argo_app_client:${{ env.git_branch }}.${{ env.git_hash }} barminz/argo_app_client:latest
+        docker tag kupidun/argo_app_api:${{ env.git_branch }}.${{ env.git_hash }} kupidun/argo_app_api:latest
+        docker tag kupidun/argo_app_client:${{ env.git_branch }}.${{ env.git_hash }} kupidun/argo_app_client:latest
 
     - name: Push latest
       run: |
-        docker push barminz/argo_app_api:latest
-        docker push barminz/argo_app_client:latest
+        docker push kupidun/argo_app_api:latest
+        docker push kupidun/argo_app_client:latest

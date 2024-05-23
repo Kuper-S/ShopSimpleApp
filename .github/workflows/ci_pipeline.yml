@@ -2,52 +2,52 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v4
-    
-    - name: Set lower case owner name
-      run: echo "OWNER_LC=${{ github.repository_owner,, }}" >>${GITHUB_ENV}
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
-    - name: Build the Docker image
-      run: |
-        git_hash=$(git rev-parse --short "$GITHUB_SHA")
-        git_branch=$(echo ${GITHUB_REF#refs/heads/} | tr '[:upper:]' '[:lower:]')
-        docker build ./api -t ghcr.io/${{ env.OWNER_LC }}/argo_app_api:${git_branch}.${git_hash}
-        docker build ./client -t ghcr.io/${{ env.OWNER_LC }}/argo_app_client:${git_branch}.${git_hash}
+      - name: Set lower case owner name
+        run: echo "OWNER_LC=${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' >> ${GITHUB_ENV}
 
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Push current version
-      run: |
-        git_hash=$(git rev-parse --short "$GITHUB_SHA")
-        git_branch=$(echo ${GITHUB_REF#refs/heads/} | tr '[:upper:]' '[:lower:]')
-        docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_api:${git_branch}.${git_hash}
-        docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_client:${git_branch}.${git_hash}
+      - name: Build the Docker image
+        run: |
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          git_branch=$(echo ${GITHUB_REF#refs/heads/} | tr '[:upper:]' '[:lower:]')
+          docker build ./api -t ghcr.io/${{ env.OWNER_LC }}/argo_app_api:${git_branch}.${git_hash}
+          docker build ./client -t ghcr.io/${{ env.OWNER_LC }}/argo_app_client:${git_branch}.${git_hash}
 
-    - name: Tag latest
-      run: |
-        git_hash=$(git rev-parse --short "$GITHUB_SHA")
-        git_branch=$(echo ${GITHUB_REF#refs/heads/} | tr '[:upper:]' '[:lower:]')
-        docker tag ghcr.io/${{ env.OWNER_LC }}/argo_app_api:${git_branch}.${git_hash} ghcr.io/${{ env.OWNER_LC }}/argo_app_api:latest
-        docker tag ghcr.io/${{ env.OWNER_LC }}/argo_app_client:${git_branch}.${git_hash} ghcr.io/${{ env.OWNER_LC }}/argo_app_client:latest
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Push latest
-      run: |
-        docker push ghcr.io/${ env.OWNER_LC }}/argo_app_api:latest
-        docker push ghcr.io/${ env.OWNER_LC }}/argo_app_client:latest
+      - name: Push current version
+        run: |
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          git_branch=$(echo ${GITHUB_REF#refs/heads/} | tr '[:upper:]' '[:lower:]')
+          docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_api:${git_branch}.${git_hash}
+          docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_client:${git_branch}.${git_hash}
+
+      - name: Tag latest
+        run: |
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          git_branch=$(echo ${GITHUB_REF#refs/heads/} | tr '[:upper:]' '[:lower:]')
+          docker tag ghcr.io/${{ env.OWNER_LC }}/argo_app_api:${git_branch}.${git_hash} ghcr.io/${{ env.OWNER_LC }}/argo_app_api:latest
+          docker tag ghcr.io/${{ env.OWNER_LC }}/argo_app_client:${git_branch}.${git_hash} ghcr.io/${{ env.OWNER_LC }}/argo_app_client:latest
+
+      - name: Push latest
+        run: |
+          docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_api:latest
+          docker push ghcr.io/${{ env.OWNER_LC }}/argo_app_client:latest

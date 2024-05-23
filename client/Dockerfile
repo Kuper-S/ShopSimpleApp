@@ -5,9 +5,9 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY .. . 
+COPY . . 
 
 EXPOSE 8000
 
 # Run client_web_server.py when the container launches
-CMD ["python", "client_web_server.py"]
+CMD ["python", "client_server.py"]

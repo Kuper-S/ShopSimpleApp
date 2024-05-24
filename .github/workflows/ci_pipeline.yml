@@ -30,8 +30,8 @@ jobs:
           context: ./api
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner | lower }}/argo_app_api:latest
-            ghcr.io/${{ github.repository_owner | lower }}/argo_app_api:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner | replace(' ', '-')  }}/argo_app_api:latest
+            ghcr.io/${{ github.repository_owner | replace(' ', '-')  }}/argo_app_api:${{ github.sha }}
 
       - name: Build and push Docker image for Client server
         uses: docker/build-push-action@v2
@@ -39,5 +39,5 @@ jobs:
           context: ./client
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner | lower }}/argo_app_client:latest
-            ghcr.io/${{ github.repository_owner | lower }}/argo_app_client:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner | replace(' ', '-')  }}/argo_app_client:latest
+            ghcr.io/${{ github.repository_owner | replace(' ', '-')  }}/argo_app_client:${{ github.sha }}

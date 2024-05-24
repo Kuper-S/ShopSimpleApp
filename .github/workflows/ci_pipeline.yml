@@ -14,8 +14,14 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Set lower case owner REPO NAME
+      - name: Set lower case owner name
         run: echo "OWNER_LC=${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' >> ${GITHUB_ENV}
+      
+      - name: Debug Environment Variables
+        run: |
+          echo "OWNER_LC=${{ env.OWNER_LC }}"
+          echo "API Image: ghcr.io/${{ env.OWNER_LC }}/argo_app_api:latest"
+          echo "Client Image: ghcr.io/${{ env.OWNER_LC }}/argo_app_client:latest"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

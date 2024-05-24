@@ -14,7 +14,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Set lower case owner name
+      - name: Set lower case owner REPO NAME
         run: echo "OWNER_LC=${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' >> ${GITHUB_ENV}
 
       - name: Set up Docker Buildx
@@ -24,7 +24,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image for API server
@@ -33,8 +33,8 @@ jobs:
           context: ./api
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}argo_app_api:latest
-            ghcr.io/${{ env.OWNER_LC }}argo_app_api:${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/argo_app_api:latest
+            ghcr.io/${{ env.OWNER_LC }}/argo_app_api:${{ github.sha }}
 
       - name: Build and push Docker image for Client server
         uses: docker/build-push-action@v2
@@ -42,5 +42,5 @@ jobs:
           context: ./client
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}argo_app_client:latest
-            ghcr.io/${{ env.OWNER_LC }}argo_app_client:${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/argo_app_client:latest
+            ghcr.io/${{ env.OWNER_LC }}/argo_app_client:${{ github.sha }}

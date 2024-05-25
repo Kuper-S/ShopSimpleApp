@@ -10,8 +10,8 @@ app = Flask(__name__)
 # Setting IP's in dy
 # Setting IP's in dy
 MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
-#KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'localhost:9092')
-KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'my-kafka.default.svc.cluster.local:9092')
+KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'localhost:9092')
+#KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'my-kafka.default.svc.cluster.local:9092')
 
 
 kafka_sasl_mechanism = os.getenv('KAFKA_SASL_MECHANISM')

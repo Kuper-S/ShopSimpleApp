@@ -7,7 +7,8 @@ import os
 
 app = Flask(__name__)
 #Setting IP's in a dynamic way.
-KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'my-kafka.default.svc.cluster.local:9092')
+#KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'my-kafka.default.svc.cluster.local:9092')
+KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'localhost:9092')
 API_SERVER_URL = os.getenv('API_SERVER_URL', 'http://api-server:5000')
 
 

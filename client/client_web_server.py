@@ -7,17 +7,31 @@ import os
 
 app = Flask(__name__)
 #Setting IP's in a dynamic way.
-KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'kafka:9092')
+KAFKA_BROKER = os.getenv('KAFKA_BROKER', 'my-kafka.default.svc.cluster.local:9092')
 API_SERVER_URL = os.getenv('API_SERVER_URL', 'http://api-server:5000')
+
+
+kafka_sasl_mechanism = os.getenv('KAFKA_SASL_MECHANISM')
+kafka_security_protocol = os.getenv('KAFKA_SECURITY_PROTOCOL')
+kafka_sasl_username = os.getenv('KAFKA_SASL_USERNAME')
+kafka_sasl_password = os.getenv('KAFKA_SASL_PASSWORD')
 
 producer = KafkaProducer(
     bootstrap_servers=KAFKA_BROKER,
+    security_protocol=kafka_security_protocol,
+    sasl_mechanism=kafka_sasl_mechanism,
+    sasl_plain_username=kafka_sasl_username,
+    sasl_plain_password=kafka_sasl_password,
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
 consumer = KafkaConsumer(
     'all_bought_items_response',
     bootstrap_servers=KAFKA_BROKER,
+    security_protocol=kafka_security_protocol,
+    sasl_mechanism=kafka_sasl_mechanism,
+    sasl_plain_username=kafka_sasl_username,
+    sasl_plain_password=kafka_sasl_password,
     value_deserializer=lambda m: json.loads(m.decode('utf-8'))
 )
 

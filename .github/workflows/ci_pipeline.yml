@@ -60,7 +60,7 @@ jobs:
         with:
           repository: Kuper-S/helm-ShopApp
           path: helm-ShopApp
-          token: ${{ secrets.HELM_REPO_PAT }}
+          token: ${{ secrets.HELM_REPO }}
 
       - name: Install yq
         run: |

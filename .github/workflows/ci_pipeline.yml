@@ -24,8 +24,8 @@ jobs:
         run: |
           echo "OWNER_LC=${{ env.OWNER_LC }}"
           echo "BASE_VERSION=${{ env.BASE_VERSION }}"
-          echo "API Image: ghcr.io/${{ env.OWNER_LC }}/custom_app_api:${{ env.BASE_VERSION }}.${{ github.sha }}"
-          echo "Client Image: ghcr.io/${{ env.OWNER_LC }}/custom_app_client:${{ env.BASE_VERSION }}.${{ github.sha }}"
+          echo "API Image: ghcr.io/${{ env.OWNER_LC }}/yellow_app_api:${{ env.BASE_VERSION }}.${{ github.sha }}"
+          echo "Client Image: ghcr.io/${{ env.OWNER_LC }}/yellow_app_api_app_client:${{ env.BASE_VERSION }}.${{ github.sha }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -43,8 +43,8 @@ jobs:
           context: ./api
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}/custom_app_api:latest
-            ghcr.io/${{ env.OWNER_LC }}/custom_app_api:${{ env.BASE_VERSION }}.${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/yellow_app_api:latest
+            ghcr.io/${{ env.OWNER_LC }}/yellow_app_api:${{ env.BASE_VERSION }}.${{ github.sha }}
 
       - name: Build and push Docker image for Client server
         uses: docker/build-push-action@v2
@@ -52,8 +52,8 @@ jobs:
           context: ./client
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}/custom_app_client:latest
-            ghcr.io/${{ env.OWNER_LC }}/custom_app_client:${{ env.BASE_VERSION }}.${{ github.sha }}
+            ghcr.io/${{ env.OWNER_LC }}/yellow_app_client:latest
+            ghcr.io/${{ env.OWNER_LC }}/yellow_app_client:${{ env.BASE_VERSION }}.${{ github.sha }}
 
       - name: Checkout Helm Repo
         uses: actions/checkout@v2
